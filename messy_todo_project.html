@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Messy ToDo</title>
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0e1217;
+      }
+      .parent {
+        font-family: sans-serif;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 2px solid #fff;
+        height: 50%;
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        padding: 15px 20px;
+        border-radius: 7px;
+        font-family: cursive;
+        background: #1c1f26;
+        overflow: auto;
+      }
+      h1 {
+        color: #fff;
+        margin-bottom: 10px;
+      }
+      input {
+        width: 90%;
+        text-align: center;
+        margin: 0 auto;
+        outline: none;
+        padding: 12px 10px;
+        border: none;
+        border-radius: inherit;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      button.add {
+        width: 90%;
+        text-align: center;
+        margin: 0 auto;
+        outline: none;
+        padding: 12px 10px;
+        border: none;
+        border-radius: inherit;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #fff;
+      }
+      li {
+        color: #fff;
+        list-style-type: none;
+        margin-bottom: 10px;
+      }
+      .process {
+        padding: 4px 6px;
+        border: none;
+        border-radius: 5px;
+        margin-left: 5px;
+      }
+      .toggle {
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent">
+      <h1>Todo List</h1>
+      <input id="taskInput" type="text" placeholder="task" />
+      <button onclick="addTask()" class="add">Add Task</button>
+      <ul id="taskList"></ul>
+
+      <script>
+        var data = [];
+        var counter = 0;
+        var taskInput = document.getElementById("taskInput");
+        var ul = document.getElementById("taskList");
+
+        function addTask() {
+          var task = taskInput.value.trim();
+
+          if (!task) return;
+
+          const item = {
+            id: Date.now(),
+            name: task,
+            done: false,
+          };
+
+          data.push(item);
+          counter++;
+          taskInput.value = "";
+          renderTasks();
+        }
+
+        function renderTasks() {
+          ul.innerHTML = "";
+
+          data.forEach((task) => {
+            if (!task) return;
+            const li = document.createElement("li");
+            li.innerHTML = `
+      <span>${task.name}</span>
+      <button onclick="toggle(${task.id})" class="process toggle">Toggle</button>
+      <button onclick="deleteTask(${task.id})" class="process delete">Delete</button>
+    `;
+            if (task.done) {
+              li.style.textDecoration = "line-through";
+            }
+            ul.appendChild(li);
+          });
+        }
+
+        // Toggle task
+        function toggle(index) {
+          const item = data.find((i) => i.id === index);
+
+          if (item) {
+            item.done = !item.done;
+            renderTasks();
+          }
+        }
+
+        // Delete task
+        function deleteTask(id) {
+          const item = data.findIndex((i) => i.id === id);
+          if (item !== -1) {
+            data.splice(item, 1);
+            renderTasks();
+          }
+        }
+
+        setInterval(() => {
+          if (data.every((d) => d.done === true) && data.length > 0) {
+            console.log("All tasks done!");
+          }
+        }, 1000);
+      </script>
+    </div>
+  </body>
+</html>
